@@ -14,6 +14,7 @@ class Elves:
     assi2 = Assignment()
     counter_inside = 0
     counter_overlap = 0
+
     def read(self, line):
         line = line.strip()
         text = line.split(',')
