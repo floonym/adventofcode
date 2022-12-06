@@ -1,11 +1,13 @@
+from collections import deque
+
 
 class Ship:
-    stack_height = 100
-    load = [[0 for i in range(100)] for j in range(9)]
+    load = []
+    for i in range(9):
+        stack = deque()
+        load.append(stack)
 
     def read_containers(self):
-        counter = 0
-
         for line in Lines:
             line.strip()
 
@@ -14,46 +16,40 @@ class Ship:
 
             for stack in range(0, 9, 1):
                 if line[1+4*stack] != ' ':
-                    self.load[stack][counter+self.stack_height-8] = line[1+4*stack]
-                    self.load[stack][0] += 1
-
-            counter += 1
-
-        print(self.load)
+                    self.load[stack].appendleft(line[1+4*stack])
+        # print(self.load)
 
     def add_to_top(self, y, containers):
         if task == 2:
             containers.reverse()
 
         for container in containers:
-            self.load[y][self.stack_height-1-self.load[y][0]] = container
-            self.load[y][0] += 1
+            self.load[y].append(container)
 
     def remove_from_top(self, x, nr):
         containers = []
         for container in range(0, nr, 1):
-            containers.append(self.load[x][self.stack_height-self.load[x][0]])
-            self.load[x][self.stack_height - self.load[x][0]] = 0
-            self.load[x][0] -= 1
+            containers.append(self.load[x][len(self.load[x])-1])
+            self.load[x].pop()
         return containers
 
-    def move(self, x, y, nr):
-        x -= 1
-        y -= 1
-        self.add_to_top(y, self.remove_from_top(x, nr))
-        print(self.load)
-
-    def parse(self):
+    def move(self):
         for line in Lines:
             if line[0] == 'm':
                 line.strip()
                 words = line.split()
-                self.move(int(words[3]), int(words[5]), int(words[1]))
+
+                x = int(words[3]) - 1
+                y = int(words[5]) - 1
+                nr = int(words[1])
+
+                self.add_to_top(y, self.remove_from_top(x, nr))
+                # print(self.load)
 
     def print_top(self):
         print("Top Containers: ")
         for stack in self.load:
-            print(stack[self.stack_height-stack[0]], end="")
+            print(stack[len(stack)-1], end="")
 
 
 if __name__ == '__main__':
@@ -63,6 +59,6 @@ if __name__ == '__main__':
     task = 1
 
     ship.read_containers()
-    ship.parse()
+    ship.move()
     ship.print_top()
 
